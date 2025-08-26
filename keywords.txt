@@ -1,5 +1,4 @@
-NombreClase KEYWORD1
-Metodo1 KEYWORD2
-Metodo2 KEYWERD2
-Atributo1 LITERAL1
-Atributo1 LITERAL1
+MentorBit_HALL KEYWORD1
+begin KEYWORD2
+update KEYWORD2
+confiPort KEYWORD2
