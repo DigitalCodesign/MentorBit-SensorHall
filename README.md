@@ -1,44 +1,44 @@
-# MentorBit-╠══██████████████══╣
+# MentorBit-HALL
 
-╠══██████   DESCRIPCION   ████████══╣.
+Esta librería está diseñada para que puedas detectar la presencia de campos magneticos en tu entorno de una forma muy sencilla usando tu placa MentorBit y el módulo de sensor HALL HAL3114E.
 
 Si estás empezando en el mundo de la electrónica, ¡no te preocupes! MentorBit está pensado para que aprender sea fácil y divertido. Esta placa ya incluye un montón de componentes (LEDs, pulsadores, pantallas, etc.) y utiliza conectores especiales (JST) para que puedas añadir nuevos sensores y módulos sin tener que pelearte con un montón de cables. Pásate por nuestra web para saber más de MentorBit y nuestros productos [pinchando aquí](https://digitalcodesign.com/).
 
-![Render del MentorBit módulo matriz de pulsadores.](╠══██████████████══╣)
+![Render del MentorBit módulo sensor HALL.](https://github.com/DigitalCodesign/MentorBit-SensorHall/blob/main/assets/Detector_metales.jpg)
 
-╠══███████   DESCRIPCION DE QUE SE PUEDE HACER (PEQUEÑA)   ███████══╣
+Con esta librería, podrás saber si hay algun objeto metalico enfrente del sensor o algún campo mágnetico en tu entorno y usar esa información para crear proyectos increíbles. Abre la puerta a proyectos interactivos que reaccionan a imanes.
 
 ---
 
 ## Descripción
 
-### ¿Qué es ╠══██████████████══╣ ?
+### ¿Qué es un sensor HALL?
 
-╠══███████   DESCRIPCION DEL MODULO AL CUAL VA DIRIGIDA LA LIBRERIA███████══╣
+Es un dispositivo electrónico que cambia su estado de salida cuando se le acerca un imán. A diferencia de un interruptor físico, no necesita contacto para activarse.
 
 Este tipo de módulo es ideal para:
 
-- ╠══██████████████══╣.
-- ╠══██████████████══╣.
-- ╠══██████████████══╣.
+- Detección de Proximidad: Saber si una puerta o ventana está abierta o cerrada.
+- Contadores de Vueltas: Medir la velocidad de una rueda o un motor.
+- Sistemas de Seguridad: Crear alarmas magnéticas sencillas.
 
 ---
 
 ### ¿Qué hace esta librería?
 
-La librería **╠══██████████████══╣** permite:
+La librería MentorBit-SensorHall permite:
 
-- ╠══██████████████══╣.
-- ╠══██████████████══╣.
-- ╠══██████████████══╣.
+- Inicializar el sensor con una sola línea de código.
+- Leer de forma sencilla si se está detectando un campo magnético.
+- Abstraer la complejidad del hardware para que te centres en tu proyecto.
 
 ---
 
 ### ¿Qué puedes construir con este módulo?
 
-- ╠══██████████████══╣.
-- ╠══██████████████══╣.
-- ╠══██████████████══╣.
+- Un sistema de alarma para una puerta que se activa cuando se abre.
+- Un velocímetro para tu bicicleta, contando las vueltas que da la rueda.
+- Un interruptor mágico que enciende un LED al acercarle una "varita" con un imán.
 
 ---
 
@@ -46,52 +46,48 @@ La librería **╠══██████████████══╣** pe
 
 ### 1. **Conexión del Módulo**
 
-╠══███████   EXPLICAR LA CONEXION DEL MODULO CON MENTORBIT   ███████══╣.
+Conectar el módulo Sensor Hall a tu placa MentorBit es muy fácil gracias a los conectores JST. Antes que nada, conecta tu módulo de sensor HALL a uno de los puertos Digitales de Entrada/Salida dentro de la zona de Puertos para Módulos en tu placa MentorBit. ¡Y listo! No necesitas más cables.
 
 
 ### 2. **Instalación de la Librería**
 
 - Abre tu entorno de programación IDE de Arduino.
 - Ve al menú *Programa -> Incluir Librería -> Administrar Librerías...*
-- En el buscador, escribe ***MentorBit-╠══██████████████══╣*** y haz clic en "Instalar".
+- En el buscador, escribe MentorBit-SensorHall y haz clic en "Instalar".
 
 ![Ejemplo de búsqueda en el gestor de librerías del IDE de Arduino.](https://github.com/DigitalCodesign/MentorBit-╠══██████████████══╣/blob/main/assets/library_instalation_example.png)
 
 ---
 
-## Ejemplo Básico: ╠══██████████████══╣
+## Ejemplo Básico:
 
-╠══███████   CAMBIAR EJEMPLO   ███████══╣
-
-Este ejemplo lee el estado de uno de los 16 pulsadores y lo imprime por el monitor serie.
+Este ejemplo lee el estado del sensor HALL y enciende un led si externo al módulo detecta un campo magnético.
 
 ```cpp
-// Se incluye la libreria MentorBitMatrizPulsadores
-#include <MentorBitMatrizPulsadores.h>
+#include <MentorbitHALL.h>
 
-// Se define la dirección I2c en la cual se encuentra la matriz de pulsadores
-// y tambien se define que pin de la matriz se quiere utilizar
-#define DireccionI2c 0x26
-#define Pulsador 2
-
-// Se crea el objeto Matriz
-MentorBitMatrizPulsadores matriz;
-
+// Crear una instancia de la clase con los pines correspondientes
+// HallPin en 2, LED en 13
+HallLed hallSensor(2, 13);
 
 void setup() {
-    // Inicializamos el bus serial a una velocidad de 9600 baudios
-    Serial.begin(9600);
-    // Inicializamos la Matriz de pulsadores
-    matriz.begin(DireccionI2c);
+  // Inicializa los pines y la librería
+  hallSensor.begin();
+  Serial.begin(9600);
 }
 
 void loop() {
-    if(matriz.leerPulsador(Pulsador) == LOW){ // Se lee el estado del pulsador de la matriz
-        // Imprimir por serial que se ha presionado el pulsador
-        Serial.println("Se ha presionado el pulsador numero " + String(Pulsador));
-        // Pequeño delay para evitar que lea dos o más veces una unica pulsación
-        delay(1000);
-    }
+  // Actualiza el estado del sensor y del LED
+  hallSensor.update();
+
+  // Opcional: imprimir en serie el estado del sensor
+  if (digitalRead(2)) {
+    Serial.println("Sensor Hall activado");
+  } else {
+    Serial.println("Sensor Hall desactivado");
+  }
+
+  delay(100); // Pequeña pausa para estabilidad
 }
 ```
 
@@ -99,30 +95,20 @@ void loop() {
 
 ## Funciones Principales
 
-╠══███████   RELLENAR   ███████══╣
+- `void begin()`  
+  Inicializa los pines configurados para el sensor HALL.
 
-- `bool leerPulsador(uint8_t Pin)`  
-  Lee el estado de un determinado pulsador.
-
----
-
-## Atributos Principales (clase matriz)
-
-╠══███████   RELLENAR   ███████══╣
-
-- `matriz.PUERTO_A`  
-  Atributo para seleccionar el puerto A en varios métodos.
+- `void update()`  
+  Actualiza el estado del sensor HALL y controla el LED.
 
 ---
 
 ## Recursos Adicionales
 
-╠══███████   CAMBIRAR ENLACES   ███████══╣
-
 - [Web del fabricante](https://digitalcodesign.com/)
 - [Tienda Online de Canarias](https://canarias.digitalcodesign.com/shop)
 - [Tienda Online de Península](https://digitalcodesign.com/shop)
 - [Web Oficial de MentorBit](https://digitalcodesign.com/mentorbit)
-- [Web Oficial del Módulo Matriz de Pulsadores](https://canarias.digitalcodesign.com/shop/00038775-mentorbit-modulo-matriz-de-pulsadores-i2c-8105?page=2&category=226&order=create_date+desc#attr=)
-- [Manual de usuario del Módulo](https://drive.google.com/file/d/1r-NqhV3tNsIOfbVwdaLwVG5oWKHT8m4R/view?usp=drive_link)
-- [Modelo 3D del Módulo en formato .STEP](https://drive.google.com/file/d/1VcCUQ8EQWMD2fs43Jvh-ibaW29CgUGun/view?usp=drive_link)
+- [Web Oficial del Módulo Sensor HALL](https://digitalcodesign.com/web#id=8726&action=441&model=product.template&view_type=form&cids=2%2C1&menu_id=291)
+- [Manual de usuario del Módulo](https://drive.google.com/drive/folders/1Od-UCIs65W1tSBUHtOhaoi7MCI4rnAiM)
+- [Modelo 3D del Módulo en formato .STEP](https://drive.google.com/drive/folders/1Od-UCIs65W1tSBUHtOhaoi7MCI4rnAiM)
